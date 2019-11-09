@@ -7,14 +7,20 @@ import random
 import urllib
 import os
 import time
+import sys
+
 
 
 p = Usb(0x0483, 0x5720, 0)
 
 
 size = 580, 580
+if(len(sys.argv) == 1):
+    keyword = 'bitcoin'
+else:
+    keyword = sys.argv[1]    
 
-keyword = 'bitcoin'
+
 keyword+=' meme'
 ammount = 100
 try:
