@@ -25,7 +25,7 @@ fig = go.Figure(data=[go.Candlestick(x=df['Date'],
                       ])
 
 
-fig.update_layout(xaxis_rangeslider_visible=False, width=800, height=400)
+fig.update_layout(xaxis_rangeslider_visible=False, width=580, height=400)
 
 fig.write_image("fig1.png")
 #fig.show()
@@ -37,7 +37,7 @@ WHITE = 1
 BLACK = 0
 
 p = Usb(0x0483, 0x5720, 0)
-recipt = Image.new('1', (750,900), 1)
+recipt = Image.new('1', (580,500), 1)
 
 
 
@@ -49,7 +49,7 @@ recipt.paste(im2)
 
 
 x1 = 0
-y1 = 200
+y1 = 149
 
 im1 = Image.open('fig1.png')
 recipt.paste(im1, (x1, y1))
@@ -73,7 +73,7 @@ p.image(recipt)
 #p.image('fig1.png', high_density_vertical=True, high_density_horizontal=True, impl=u'bitImageRaster', fragment_height=960)
 
 
-#p.cut()
+p.cut()
 
 '''
 

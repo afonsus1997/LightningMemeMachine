@@ -69,8 +69,8 @@ wpercent = (basewidth/float(img.size[0]))
 hsize = int((float(img.size[1])*float(wpercent)))
 img = img.resize((basewidth,hsize), Image.ANTIALIAS)
 
-img.show()
-img.save("meme.jpg") 
+#img.show()
+#img.save("meme.jpg") 
 
 print("\n\nDone!\n\n")
 
@@ -83,8 +83,8 @@ for i in range(ammount):
 '''
 print("\n\nCrearing session!\n\n")
 
-#p.image("meme.jpg")
-#p.cut()
+p.image("meme.jpg")
+p.cut()
 
 if os.path.exists("meme.jpg"):
   os.remove("meme.jpg")
