@@ -1,8 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import time
 from escpos.printer import Usb
-from PIL import Image, ImageFont, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
+import os
 
 import plotly.graph_objects as go
 import pandas as pd
@@ -14,7 +15,7 @@ import pandas as pd
 
 
 
-df = pd.read_csv('http://www.cryptodatadownload.com/cdd/Kraken_BTCUSD_1h.csv', skiprows=1)
+df = pd.read_csv('http://www.cryptodatadownload.com/cdd/gemini_BTCUSD_1hr.csv', skiprows=1)
 df=df.head(50)
 
 
@@ -36,38 +37,43 @@ WHITE = 1
 BLACK = 0
 
 p = Usb(0x0483, 0x5720, 0)
-image = Image.new('1', (800,800), 1)
+recipt = Image.new('1', (750,900), 1)
 
-x1 = 0
-y1 = 420
-
-im1 = Image.open('fig1.png')
-image.paste(im1, (x1, y1, x1 + 800, y1 + 400))
 
 
 x1 = 0
 y1 = 0
 
-im1 = Image.open('btclogo.png')
-image.paste(im1, (x1, y1, x1 + 800, y1 + 400))
-
-#draw = ImageDraw.Draw(image)
-#draw.rectangle((0, 0, 599, 99), fill=WHITE, outline=BLACK)
-
-msg='Bitcoin Chart BTCUSD'
-w, h = draw.textsize(msg)
-draw.text(((800-w)/2, 410), msg, fill=BLACK)
+im2 = Image.open('btclogo.png')
+recipt.paste(im2)
 
 
+x1 = 0
+y1 = 200
+
+im1 = Image.open('fig1.png')
+recipt.paste(im1, (x1, y1))
 
 
-p.image(image)
+
+#draw = ImageDraw.Draw(recipt)
+
+#UbuntuFont = ImageFont.truetype("fonts/Ubuntu-MediumItalic.ttf")
+
+#msg='Bitcoin Chart BTCUSD'
+#draw.text((0, 410), msg, fill=BLACK, font=UbuntuFont)
+
+#LOCAL SAVE
+#recipt.save("tmp.png")
+#os.system("open tmp.png")
+
+p.image(recipt)
 
 
 #p.image('fig1.png', high_density_vertical=True, high_density_horizontal=True, impl=u'bitImageRaster', fragment_height=960)
 
 
-p.cut()
+#p.cut()
 
 '''
 
