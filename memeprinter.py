@@ -8,85 +8,128 @@ import urllib
 import os
 import time
 import sys
+import signal
 
 
 
-p = Usb(0x0483, 0x5720, 0)
 
 
-size = 580, 580
-if(len(sys.argv) == 1):
-    keyword = 'bitcoin'
-else:
-    keyword = sys.argv[1]    
+def meme_temeout_handler(signum, frame):
+    raise Exception("end of time")
 
+def memeprinter(keyword):
+    
+    #p = Usb(0x0483, 0x5720, 0)
+    
+    size = 580, 580
+    '''
+    if(len(sys.argv) == 1):
+        keyword = 'bitcoin'
+    else:
+        keyword = sys.argv[1]    
+    '''
 
-keyword+=' meme'
-ammount = 100
-try:
-    meme_db = open(keyword + ".txt", 'r')
-    urls = meme_db.readlines()
-    print(urls)
-
-except:
-    meme_db = open(keyword + ".txt", 'w')
-    search = {"keywords":keyword,"limit":ammount,"print_urls":False, "no_download":True, "safe_search":True}
-    response = google_images_download.googleimagesdownload()   #class instantiation
-    paths = response.download(search)
-    for i in range(ammount):
-        meme_db.write(paths[0].get(keyword)[i] + '\n')
-    meme_db.close()
-    meme_db = open(keyword + ".txt", 'r')
-    urls = meme_db.readlines()
-
-
-linenumber = random.randint(0,ammount-1)
-print(linenumber)
-memeurl = urls[linenumber] 
-print("\n\n" + memeurl + "\n\n")
-
-succeed=True
-while True:
+    keyword+=' meme'
+    ammount = 100
     try:
-        urllib.request.urlretrieve(memeurl[:-1], "meme.jpg")
+        meme_db = open(keyword + ".txt", 'r')
+        urls = meme_db.readlines()
+        print("[Meme Machine] - Getting memes from file\n")
+
     except:
-        succeed = False
-        linenumber = random.randint(0,ammount-1)
-        print(linenumber)
-        memeurl = urls[linenumber] 
-        print("\n\n" + memeurl + "\n\n")
-    if succeed:
-        break
+        meme_db = open(keyword + ".txt", 'w')
+        search = {"keywords":keyword,"limit":ammount,"print_urls":False, "no_download":True, "safe_search":True}
+        response = google_images_download.googleimagesdownload()   #class instantiation
+        paths = response.download(search)
+        for i in range(ammount):
+            meme_db.write(paths[0].get(keyword)[i] + '\n')
+        meme_db.close()
+        meme_db = open(keyword + ".txt", 'r')
+        urls = meme_db.readlines()
+        print("[Meme Machine] - New meme keyword, fetching meme urls\n")
+
+    print("[Meme Machine] - Choosing a meme..." + "\n")
+
+    signal.signal(signal.SIGALRM, meme_temeout_handler)
+    signal.alarm(6)
+    
+
+    try:
+        while(True):
+            linenumber = random.randint(0,ammount-1)
+            memeurl = urls[linenumber] 
+            extension = os.path.splitext(memeurl[:-1])[1]
+            #print(extension)
+            if(extension == ".bmp" or extension == ".jpg" or extension == ".jpeg" or extension == ".png" ):
+                break
+
+        succeed=True
+        while True:
+            try:
+                urllib.request.urlretrieve(memeurl[:-1], "meme." + extension)        
+                #succeed = True
+            except:
+                succeed = False
+                linenumber = random.randint(0,ammount-1)
+                memeurl = urls[linenumber] 
+                extension = os.path.splitext(memeurl[:-1])[1]
+            if succeed:
+                break
 
 
-print("\n\nresizing...\n\n")
+        print("[Meme Machine] - Chosen meme: " + memeurl + "\n")
 
-time.sleep(1)
 
-basewidth = 580
-img = Image.open("meme.jpg")
-wpercent = (basewidth/float(img.size[0]))
-hsize = int((float(img.size[1])*float(wpercent)))
-img = img.resize((basewidth,hsize), Image.ANTIALIAS)
+        time.sleep(1)
 
-#img.show()
-#img.save("meme.jpg") 
+        print("[Meme Machine] - Resizing meme..." + "\n")
 
-print("\n\nDone!\n\n")
 
-'''
-for i in range(ammount):
-    path=paths[0].get(keyword)[i]
-    print(path)
-    p.image(path)
-    p.cut()
-'''
-print("\n\nCrearing session!\n\n")
+        basewidth = 580
+        img = Image.open("meme."+ extension)
+        wpercent = (basewidth/float(img.size[0]))
+        hsize = int((float(img.size[1])*float(wpercent)))
+        img = img.resize((basewidth,hsize), Image.ANTIALIAS)
 
-p.image("meme.jpg")
-p.cut()
+        #img.show()
+        img.save("meme." + extension) 
 
-if os.path.exists("meme.jpg"):
-  os.remove("meme.jpg")
-else:
-  print("The file does not exist")
+        print("[Meme Machine] - Printing meme..." + "\n")
+
+
+
+
+        p.image("meme." + extension)
+        p.cut()
+
+        print("[Meme Machine] - Cleaning session..." + "\n")
+
+
+        if os.path.exists("meme." + extension):
+            os.remove("meme." + extension)
+        else:
+            print("[Meme Machine] - Nothing to clean" + "\n")
+
+        print("[Meme Machine] - Everything done!" + "\n")
+
+        return 1
+
+    except Exception:
+        print("[Meme Machine] - Meme temeout exceeded!\n")
+
+        return -1
+
+
+
+#memeprinter("bitcoin")
+
+
+
+
+
+
+
+
+
+
+
